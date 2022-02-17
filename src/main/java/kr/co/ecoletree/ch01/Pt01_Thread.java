@@ -8,6 +8,8 @@
  *****************************************************************/
 package kr.co.ecoletree.ch01;
 
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public class Pt01_Thread {
@@ -16,14 +18,19 @@ public class Pt01_Thread {
      * anonymous 클래스로 구현하여 Thread 실행
      */
     private static Thread testNormalThread() {
-        return null;
+        return new Thread() {
+            @Override
+            public synchronized void start() {
+                printMessage("Run with Thread!");
+            }
+        };
     }
 
     /**
      * Runnable 사용하여 Thread 실행
      */
     private static Thread testNormalThread(final Runnable runnable) {
-        return null;
+        return new Thread(runnable);
     }
 
     /**
@@ -34,8 +41,10 @@ public class Pt01_Thread {
      *
      * @return
      */
-    private static Thread testDaemonThread() {
-        return null;
+    private static Thread testDaemonThread(final Runnable r) {
+        final Thread t = new Thread(r);
+        t.setDaemon(true);
+        return t;
     }
 
     private static void printMessage(final String messageFormat, final Object... o) {
@@ -44,11 +53,22 @@ public class Pt01_Thread {
     }
 
     public static void main(String[] args) {
-        final Runnable r1 = () -> {};
+        final Runnable r1 = () -> {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            printMessage("Run with runnable!");
+        };
 
-        testNormalThread().start();
-        testNormalThread(r1).start();
+        printMessage("Hello world!");
 
-        testDaemonThread().start();
+//        testNormalThread().start();
+//        testNormalThread(r1).start();
+
+        testDaemonThread(r1).start();
+
+        printMessage("finished");
     }
 }

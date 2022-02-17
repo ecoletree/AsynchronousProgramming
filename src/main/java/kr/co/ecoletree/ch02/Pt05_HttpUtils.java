@@ -8,5 +8,13 @@
  *****************************************************************/
 package kr.co.ecoletree.ch02;
 
+import kr.co.ecoletree.common.helper.HttpClientUtil;
+
 public class Pt05_HttpUtils {
+
+    public static void main(String[] args) {
+        HttpClientUtil.post("")
+                .body("")
+                .exchangeAsMapAsync();
+    }
 }
